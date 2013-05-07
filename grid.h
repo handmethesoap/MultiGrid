@@ -47,7 +47,7 @@ public:
   
   void set_boundary(double(*boundary_function)(int, int));
   void set_initial(double(*v_initialiser_function)(int, int), double(*f_initialiser_function)(int, int));
-  void print_v(void);
+  void print_v(void); // overload ostream operator instead
   void print_f(void);
   
   
