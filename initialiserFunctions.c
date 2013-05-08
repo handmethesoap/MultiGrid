@@ -1,5 +1,6 @@
 #include "initialiserFunctions.h"
 #include "math.h"
+#include <iostream>
 
 double boundary_function(int grid_point_row, int grid_point_column, int n)
 {
@@ -10,7 +11,8 @@ double boundary_function(int grid_point_row, int grid_point_column, int n)
 double sin_boundary(int grid_point_row, int grid_point_column, int n)
 {
   const double pi = 3.14159265;
-  double grid_value = sin(pi*grid_point_row/(n-1))*sinh(pi*grid_point_column/(n-1));
+  double grid_value = sin(pi*grid_point_column/(n-1))*sinh(pi*grid_point_row/(n-1));
+  std::cout << "sin(pi*" << grid_point_column << "/" << n-1 << ")*(sinh(pi*" << grid_point_row << "/" << n-1 << ") = " << grid_value << std:: endl;
   return grid_value;
 }
 

@@ -13,7 +13,8 @@ int main(int argc, char* argv[])
   
   int n = (1 << l) + 1;
   
-  Grid A(n, sin_boundary);
+  Grid A(n);
+  A.rb_gauss_seidel_relaxation();
   
   //A.set_initial(v_initialiser_function, f_initialiser_function);
   //A.set_boundary(sin_boundary);

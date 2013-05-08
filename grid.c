@@ -35,6 +35,43 @@ void Grid:: set_initial(double(*v_initialiser_function)(int, int, int), double(*
    }
 }
 
+void Grid:: rb_gauss_seidel_relaxation(void)
+{
+  int start;
+  int r1, r2, r3, r4, r5;
+  
+  for( int it1 = 1; it1 < ((m_n)-1); ++it1 )
+  {
+    start = it1%2 +1;
+    r1 = it1 * m_n;
+    r2 = r1 + 1;
+    r3 = r1 - 1;
+    r4 = (it1 - 1) * m_n;
+    r5 = (it1 +1) * m_n;
+    
+    for( int it = start; it < ((m_n)-1); it += 2 )
+    {
+      m_v[ r1 + it] = m_v[ r1 + it]*4.0 - m_v[ r2 + it ] - m_v[ r3 + it ] - m_v[ r4 + it] - m_v[ r5 + it]; 
+    }
+  }
+  
+  for( int it1 = 1; it1 < ((m_n)-1); ++it1 )
+  {
+    start = (it1+1)%2 +1;
+    r1 = it1 * m_n;
+    r2 = r1 + 1;
+    r3 = r1 - 1;
+    r4 = (it1 - 1) * m_n;
+    r5 = (it1 +1) * m_n;
+    
+    for( int it = start; it < ((m_n)-1); it += 2 )
+    {
+      m_v[ r1 + it] = m_v[ r1 + it]*4.0 - m_v[ r2 + it] - m_v[ r3 + it ] - m_v[ r4 + it] - m_v[ r5 + it]; 
+    }
+  }
+  
+}
+
 void Grid:: print_v(void)
 {
   std::cout << "v=" << std::endl;

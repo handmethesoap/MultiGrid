@@ -55,8 +55,8 @@ public:
 	m_f[i] = 0;
       }
       
-      set_boundary(boundary_function);
       set_initial(v_initialiser_function);
+      set_boundary(boundary_function);
   }
   
   Grid(int n, double(*boundary_function)(int, int, int), double(*v_initialiser_function)(int, int, int), double(*f_initialiser_function)(int, int, int))
@@ -65,8 +65,8 @@ public:
       m_v = new double[n*n];
       m_f = new double[n*n];
       
-      set_boundary(boundary_function);
       set_initial(v_initialiser_function, f_initialiser_function);
+      set_boundary(boundary_function);
   }
   
   double* get_v(void)
@@ -87,6 +87,8 @@ public:
   void set_boundary(double(*boundary_function)(int, int, int));
   void set_initial(double(*v_initialiser_function)(int, int, int));
   void set_initial(double(*v_initialiser_function)(int, int, int), double(*f_initialiser_function)(int, int, int));
+  void rb_gauss_seidel_relaxation(void);
+  void full_weight_restriction(void);
   void print_v(void); // overload ostream operator instead
   void print_f(void);
   
