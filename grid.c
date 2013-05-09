@@ -7,7 +7,7 @@ void Grid:: set_boundary(double(*boundary_function)(int, int, int))
     m_v[it] = boundary_function(0, it, m_n);
     m_v[m_n*m_n - m_n + it] = boundary_function(m_n, it, m_n);
     m_v[it*m_n] = boundary_function(it, 0, m_n);
-    m_v[it*m_n + m_n - 1] = boundary_function(it, m_n, m_n);
+    m_v[it*m_n + m_n - 1] = boundary_function(it, m_n - 1, m_n);
   }
   
 }
@@ -72,6 +72,23 @@ void Grid:: rb_gauss_seidel_relaxation(void)
   
 }
 
+void Grid:: jacobi_relaxation(void)
+{
+  int row_offset;
+  for( int it_row = 1; it_row < ((m_n)-1); ++it_row )
+ {
+    row_offset = it_row * m_n;
+    
+    for( int it_col = 1; it_col < ((m_n)-1); ++ it_col )
+    {
+      m_v[row_offset + it_col] = 0.25*(m_v[row_offset + it_col - m_n] + m_v[row_offset + it_col + m_n] + m_v[row_offset + it_col + 1] + m_v[row_offset + it_col - 1] + m_f[row_offset + it_col]/((m_n-1)*(m_n-1)));
+    }
+ }
+}
+
+double Grid:: calculate_norm(void)
+{
+}
 void Grid:: print_v(void)
 {
   std::cout << "v=" << std::endl;

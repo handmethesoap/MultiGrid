@@ -13,14 +13,35 @@ int main(int argc, char* argv[])
   
   int n = (1 << l) + 1;
   
-  Grid A(n);
-  A.rb_gauss_seidel_relaxation();
+  Grid A(n, boundary_function_zero);
+  A.print_v();
+  A.jacobi_relaxation();
   
   //A.set_initial(v_initialiser_function, f_initialiser_function);
   //A.set_boundary(sin_boundary);
   
   A.print_v();
-  A.print_f();
+  A.jacobi_relaxation();
+  A.print_v();
+  A.jacobi_relaxation();
+  A.print_v();
+  A.jacobi_relaxation();
+  for( int it_col = 0; it_col < 100; ++ it_col )
+  {
+    A.jacobi_relaxation();
+  }
+  A.print_v();
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   
   return 0;
 }

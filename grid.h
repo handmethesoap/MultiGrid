@@ -88,7 +88,9 @@ public:
   void set_initial(double(*v_initialiser_function)(int, int, int));
   void set_initial(double(*v_initialiser_function)(int, int, int), double(*f_initialiser_function)(int, int, int));
   void rb_gauss_seidel_relaxation(void);
+  void jacobi_relaxation(void);
   void full_weight_restriction(void);
+  double calculate_norm(void);
   void print_v(void); // overload ostream operator instead
   void print_f(void);
   
