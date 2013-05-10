@@ -10,28 +10,17 @@
 int main(int argc, char* argv[])
 {
  
-  //int l = atoi(argv[1]);
+  int l = atoi(argv[1]);
   
-  //int n = (1 << l) + 1;
+  int n = (1 << l) + 1;
   
-  std::ofstream myfile;
-  myfile.open("gridSizeVsError.dat");
-  
-  Grid* A;
-  
-  for( int n = 7; n <= 102; ++n)
+  Grid A(n, boundary_function_zero);
+  for(int i = 0; i< 50; ++i)
   {
-    A = new Grid(n, boundary_function_zero, v_initialiser_function_zero, f_initialiser_function_sin);
-    for( int it_col = 0; it_col < 100; ++ it_col )
-    {
-      A->jacobi_relaxation();
-    }
-    myfile << n-2 << " " << A->calculate_L_inf_norm(exact_solution)<< std::endl;
-    
-    delete A;
+    A.rb_gauss_seidel_relaxation();
   }
+  A.print_v();
   
-  myfile.close();
-  return 0;
+
 }
 

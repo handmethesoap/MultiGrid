@@ -95,6 +95,7 @@ public:
   void set_initial(double(*v_initialiser_function)(int, int, int), double(*f_initialiser_function)(int, int, int));
   void rb_gauss_seidel_relaxation(void);
   void jacobi_relaxation(void);
+  void damped_jacobi_relaxation(int damping_factor);
   void full_weight_restriction(void);
   double calculate_L_inf_norm(double(*solution_function)(int, int, int));
   void print_v(void); // overload ostream operator instead

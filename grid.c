@@ -40,6 +40,7 @@ void Grid:: rb_gauss_seidel_relaxation(void)
 {
   int start;
   int r1, r2, r3, r4, r5;
+  int divisor = (m_n-1)*(m_n-1);
   
   for( int it1 = 1; it1 < ((m_n)-1); ++it1 )
   {
@@ -52,7 +53,7 @@ void Grid:: rb_gauss_seidel_relaxation(void)
     
     for( int it = start; it < ((m_n)-1); it += 2 )
     {
-      m_v[ r1 + it] = m_v[ r1 + it]*4.0 - m_v[ r2 + it ] - m_v[ r3 + it ] - m_v[ r4 + it] - m_v[ r5 + it]; 
+      m_v[ r1 + it] =  0.25*(m_v[ r2 + it ] + m_v[ r3 + it ] + m_v[ r4 + it] + m_v[ r5 + it] + m_f[r1 + it]/divisor); 
     }
   }
   
@@ -67,7 +68,7 @@ void Grid:: rb_gauss_seidel_relaxation(void)
     
     for( int it = start; it < ((m_n)-1); it += 2 )
     {
-      m_v[ r1 + it] = m_v[ r1 + it]*4.0 - m_v[ r2 + it] - m_v[ r3 + it ] - m_v[ r4 + it] - m_v[ r5 + it]; 
+      m_v[ r1 + it] =  0.25*(m_v[ r2 + it ] + m_v[ r3 + it ] + m_v[ r4 + it] + m_v[ r5 + it] + m_f[r1 + it]/divisor); 
     }
   }
   
@@ -104,6 +105,36 @@ void Grid:: jacobi_relaxation(void)
  m_v = m_v_temp;
 }
 
+void Grid:: damped_jacobi_relaxation(int damping_factor)
+{
+  int row_offset, r1, r2, r3, r4;
+  int divisor = (m_n-1)*(m_n-1);
+  double* m_v_temp = new double[m_n*m_n];
+  
+  //copy boundary
+  for( int it = 0; it < m_n; ++it)
+  {
+    m_v_temp[it] = m_v[it];
+    m_v_temp[m_n*m_n - m_n + it] = m_v[m_n*m_n - m_n + it];
+    m_v_temp[it*m_n] = m_v[it*m_n];
+    m_v_temp[it*m_n + m_n - 1] = m_v[it*m_n + m_n - 1];
+  }
+  
+  for( int it_row = 1; it_row < ((m_n)-1); ++it_row )
+ {
+    row_offset = it_row * m_n;
+    r1 = row_offset - m_n;
+    r2 = row_offset + m_n;
+    r3 = row_offset - 1;
+    r4 = row_offset + 1;
+    for( int it_col = 1; it_col < ((m_n)-1); ++ it_col )
+    {
+      m_v_temp[row_offset + it_col] = (1-damping_factor)*m_v[row_offset + it_col] + damping_factor*0.25*(m_v[r1 + it_col] + m_v[r2 + it_col] + m_v[r4 + it_col] + m_v[r3 + it_col] + m_f[row_offset + it_col]/divisor);
+    }
+ }
+ delete[] m_v;
+ m_v = m_v_temp;
+}
 double Grid:: calculate_L_inf_norm(double(*solution_function)(int, int, int))
 {
   double max = 0.0;
