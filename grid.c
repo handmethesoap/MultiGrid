@@ -79,6 +79,15 @@ void Grid:: jacobi_relaxation(void)
   int divisor = (m_n-1)*(m_n-1);
   double* m_v_temp = new double[m_n*m_n];
   
+  //copy boundary
+  for( int it = 0; it < m_n; ++it)
+  {
+    m_v_temp[it] = m_v[it];
+    m_v_temp[m_n*m_n - m_n + it] = m_v[m_n*m_n - m_n + it];
+    m_v_temp[it*m_n] = m_v[it*m_n];
+    m_v_temp[it*m_n + m_n - 1] = m_v[it*m_n + m_n - 1];
+  }
+  
   for( int it_row = 1; it_row < ((m_n)-1); ++it_row )
  {
     row_offset = it_row * m_n;

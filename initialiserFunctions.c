@@ -5,7 +5,7 @@ const double pi = 3.14159265;
 
 double boundary_function_zero(int grid_point_row, int grid_point_column, int n)
 {
-  double grid_value = 0.0;
+  double grid_value = 0;
   return grid_value;
 }
 
