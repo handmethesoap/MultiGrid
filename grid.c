@@ -75,16 +75,24 @@ void Grid:: rb_gauss_seidel_relaxation(void)
 
 void Grid:: jacobi_relaxation(void)
 {
-  int row_offset;
+  int row_offset, r1, r2, r3, r4;
+  int divisor = (m_n-1)*(m_n-1);
+  double* m_v_temp = new double[m_n*m_n];
+  
   for( int it_row = 1; it_row < ((m_n)-1); ++it_row )
  {
     row_offset = it_row * m_n;
-    
+    r1 = row_offset - m_n;
+    r2 = row_offset + m_n;
+    r3 = row_offset - 1;
+    r4 = row_offset + 1;
     for( int it_col = 1; it_col < ((m_n)-1); ++ it_col )
     {
-      m_v[row_offset + it_col] = 0.25*(m_v[row_offset + it_col - m_n] + m_v[row_offset + it_col + m_n] + m_v[row_offset + it_col + 1] + m_v[row_offset + it_col - 1] + m_f[row_offset + it_col]/((m_n-1)*(m_n-1)));
+      m_v_temp[row_offset + it_col] = 0.25*(m_v[r1 + it_col] + m_v[r2 + it_col] + m_v[r4 + it_col] + m_v[r3 + it_col] + m_f[row_offset + it_col]/divisor);
     }
  }
+ delete[] m_v;
+ m_v = m_v_temp;
 }
 
 double Grid:: calculate_L_inf_norm(double(*solution_function)(int, int, int))
