@@ -74,11 +74,12 @@ void Grid:: rb_gauss_seidel_relaxation(void)
   
 }
 
-void Grid:: jacobi_relaxation(void)
+double Grid:: jacobi_relaxation(void)
 {
   int row_offset, r1, r2, r3, r4;
-  int divisor = (m_n-1)*(m_n-1);
+  double h2 = 1.0/((m_n-1)*(m_n-1));
   double* m_v_temp = new double[m_n*m_n];
+  double residual = 0;
   
   //copy boundary
   for( int it = 0; it < m_n; ++it)
@@ -98,11 +99,13 @@ void Grid:: jacobi_relaxation(void)
     r4 = row_offset + 1;
     for( int it_col = 1; it_col < ((m_n)-1); ++ it_col )
     {
-      m_v_temp[row_offset + it_col] = 0.25*(m_v[r1 + it_col] + m_v[r2 + it_col] + m_v[r4 + it_col] + m_v[r3 + it_col] + m_f[row_offset + it_col]/divisor);
+      m_v_temp[row_offset + it_col] = 0.25*(m_v[r1 + it_col] + m_v[r2 + it_col] + m_v[r4 + it_col] + m_v[r3 + it_col] + m_f[row_offset + it_col]*h2);
+      residual += std::abs(m_v_temp[row_offset + it_col] - m_v[row_offset + it_col]);
     }
  }
  delete[] m_v;
  m_v = m_v_temp;
+ return residual*h2;
 }
 
 void Grid:: damped_jacobi_relaxation(int damping_factor)
@@ -135,6 +138,7 @@ void Grid:: damped_jacobi_relaxation(int damping_factor)
  delete[] m_v;
  m_v = m_v_temp;
 }
+
 double Grid:: calculate_L_inf_norm(double(*solution_function)(int, int, int))
 {
   double max = 0.0;
@@ -152,6 +156,7 @@ double Grid:: calculate_L_inf_norm(double(*solution_function)(int, int, int))
   }
   return max;
 }
+
 void Grid:: print_v(void)
 {
   std::cout << "v=" << std::endl;
