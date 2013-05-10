@@ -1,4 +1,5 @@
 #include "grid.h"
+#include <cmath>
 
 void Grid:: set_boundary(double(*boundary_function)(int, int, int))
 {
@@ -86,8 +87,22 @@ void Grid:: jacobi_relaxation(void)
  }
 }
 
-double Grid:: calculate_norm(void)
+double Grid:: calculate_L_inf_norm(double(*solution_function)(int, int, int))
 {
+  double max = 0.0;
+  double temp;
+  for( int it_row = 0; it_row < (m_n); ++it_row )
+  {
+    for( int it_col = 0; it_col < (m_n); ++ it_col )
+    {
+      temp = std::abs(temp = m_v[it_row * m_n + it_col] - solution_function(it_row, it_col, m_n));
+      if(temp > max)
+      {
+	max = temp;
+      }
+    }
+  }
+  return max;
 }
 void Grid:: print_v(void)
 {

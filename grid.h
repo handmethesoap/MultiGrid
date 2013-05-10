@@ -69,6 +69,12 @@ public:
       set_boundary(boundary_function);
   }
   
+  ~Grid(void)
+  {
+    delete[] m_v;
+    delete[] m_f;
+  }
+  
   double* get_v(void)
   {
     return m_v;
@@ -90,7 +96,7 @@ public:
   void rb_gauss_seidel_relaxation(void);
   void jacobi_relaxation(void);
   void full_weight_restriction(void);
-  double calculate_norm(void);
+  double calculate_L_inf_norm(double(*solution_function)(int, int, int));
   void print_v(void); // overload ostream operator instead
   void print_f(void);
   

@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include <stdlib.h> 
 #include <memory>
 #include "grid.h"
@@ -9,40 +10,24 @@
 int main(int argc, char* argv[])
 {
  
-  int l = atoi(argv[1]);
+  //int l = atoi(argv[1]);
   
-  int n = (1 << l) + 1;
+  //int n = (1 << l) + 1;
   
-  Grid A(n, boundary_function_zero);
-  A.print_v();
-  A.jacobi_relaxation();
+  std::ofstream myfile;
+  myfile.open("gridSizeVsError.dat");
   
-  //A.set_initial(v_initialiser_function, f_initialiser_function);
-  //A.set_boundary(sin_boundary);
-  
-  A.print_v();
-  A.jacobi_relaxation();
-  A.print_v();
-  A.jacobi_relaxation();
-  A.print_v();
-  A.jacobi_relaxation();
-  for( int it_col = 0; it_col < 100; ++ it_col )
+  for( int n = 12; n <= 102; ++n)
   {
-    A.jacobi_relaxation();
+    Grid A(n, boundary_function_zero, v_initialiser_function_zero, f_initialiser_function_sin);
+    for( int it_col = 0; it_col < 100; ++ it_col )
+    {
+      A.jacobi_relaxation();
+    }
+    myfile << n-2 << " " << A.calculate_L_inf_norm(exact_solution)<< std::endl;
   }
-  A.print_v();
   
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+  myfile.close();
   return 0;
 }
 
