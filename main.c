@@ -23,25 +23,28 @@ int main(int argc, char* argv[])
   //std::ofstream myfile;
   //myfile.open("");
   
-  Grid* A;
+  int n = 66;
   double initial_error;
   double current_error;
+  int iterations;
+  int k[9] = {1,8,16,24,32,40,48,56,64};
   
-  for( int n = 7; n <= 102; ++n)
+  for(int i = 0; i < 9; i++)
   {
-    A = new Grid(66, boundary_function_zero, v_initialiser_function_sin_2);
-    initial_error = A->calculate_L_inf_norm(v_initialiser_function_zero);
+
+    Grid A(n, boundary_function_zero, v_initialiser_function_sin_2, k[i]);
+    initial_error = A.calculate_L_inf_norm(v_initialiser_function_zero);
     current_error = initial_error;
+    iterations = 0;
     
-    while( 100*current_error > initial_error )
+    while( (current_error*100 > initial_error) && (iterations < 8000) )
     {
-      A->jacobi_relaxation();
+      A.damped_jacobi_relaxation(2/3);
+      current_error = A.calculate_L_inf_norm(v_initialiser_function_zero);
+      ++iterations;
     }
-    //myfile << n-2 << " " << A->calculate_L_inf_norm(exact_solution)<< std::endl;
-    
-    delete A;
+    std::cout << iterations << ", " << current_error/initial_error << std::endl;
   }
-  
   //myfile.close();
   return 0;
 

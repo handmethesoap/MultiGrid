@@ -13,13 +13,13 @@ void Grid:: set_boundary(double(*boundary_function)(int, int, int))
   
 }
 
-void Grid:: set_initial(double(*v_initialiser_function)(int, int, int))
+void Grid:: set_initial(double(*v_initialiser_function)(int, int, int, int), int k)
 {
    for( int it_row = 0; it_row < (m_n); ++it_row )
    {
      for( int it_col = 0; it_col < (m_n); ++ it_col )
      {
-       m_v[it_row * m_n + it_col] = v_initialiser_function(it_row, it_col, m_n);
+       m_v[it_row * m_n + it_col] = v_initialiser_function(it_row, it_col, m_n, k);
      }
    }
 }
@@ -40,7 +40,7 @@ void Grid:: rb_gauss_seidel_relaxation(void)
 {
   int start;
   int r1, r2, r3, r4, r5;
-  int divisor = (m_n-1)*(m_n-1);
+  int h2 = 1.0/(m_n-1)*(m_n-1);
   
   for( int it1 = 1; it1 < ((m_n)-1); ++it1 )
   {
@@ -53,7 +53,7 @@ void Grid:: rb_gauss_seidel_relaxation(void)
     
     for( int it = start; it < ((m_n)-1); it += 2 )
     {
-      m_v[ r1 + it] =  0.25*(m_v[ r2 + it ] + m_v[ r3 + it ] + m_v[ r4 + it] + m_v[ r5 + it] + m_f[r1 + it]/divisor); 
+      m_v[ r1 + it] = 0.25*(m_v[ r2 + it ] + m_v[ r3 + it ] + m_v[ r4 + it] + m_v[ r5 + it] + m_f[r1 + it]*h2);
     }
   }
   
@@ -68,17 +68,18 @@ void Grid:: rb_gauss_seidel_relaxation(void)
     
     for( int it = start; it < ((m_n)-1); it += 2 )
     {
-      m_v[ r1 + it] =  0.25*(m_v[ r2 + it ] + m_v[ r3 + it ] + m_v[ r4 + it] + m_v[ r5 + it] + m_f[r1 + it]/divisor); 
+      m_v[ r1 + it] = 0.25*(m_v[ r2 + it ] + m_v[ r3 + it ] + m_v[ r4 + it] + m_v[ r5 + it] + m_f[r1 + it]*h2);
     }
   }
   
 }
 
-void Grid:: jacobi_relaxation(void)
+double Grid:: jacobi_relaxation(void)
 {
   int row_offset, r1, r2, r3, r4;
-  int divisor = (m_n-1)*(m_n-1);
+  double h2 = 1.0/((m_n-1)*(m_n-1));
   double* m_v_temp = new double[m_n*m_n];
+  double residual = 0.0;
   
   //copy boundary
   for( int it = 0; it < m_n; ++it)
@@ -98,18 +99,21 @@ void Grid:: jacobi_relaxation(void)
     r4 = row_offset + 1;
     for( int it_col = 1; it_col < ((m_n)-1); ++ it_col )
     {
-      m_v_temp[row_offset + it_col] = 0.25*(m_v[r1 + it_col] + m_v[r2 + it_col] + m_v[r4 + it_col] + m_v[r3 + it_col] + m_f[row_offset + it_col]/divisor);
+      m_v_temp[row_offset + it_col] = 0.25*(m_v[r1 + it_col] + m_v[r2 + it_col] + m_v[r4 + it_col] + m_v[r3 + it_col] + m_f[row_offset + it_col]*h2);
+      residual += std::abs(m_v_temp[row_offset + it_col] - m_v[row_offset + it_col]);
     }
  }
  delete[] m_v;
  m_v = m_v_temp;
+ return residual*h2;
 }
 
-void Grid:: damped_jacobi_relaxation(int damping_factor)
+double Grid:: damped_jacobi_relaxation(double damping_factor)
 {
   int row_offset, r1, r2, r3, r4;
-  int divisor = (m_n-1)*(m_n-1);
+  double h2 = 1.0/((m_n-1)*(m_n-1));
   double* m_v_temp = new double[m_n*m_n];
+  double residual = 0.0;
   
   //copy boundary
   for( int it = 0; it < m_n; ++it)
@@ -129,12 +133,16 @@ void Grid:: damped_jacobi_relaxation(int damping_factor)
     r4 = row_offset + 1;
     for( int it_col = 1; it_col < ((m_n)-1); ++ it_col )
     {
-      m_v_temp[row_offset + it_col] = (1-damping_factor)*m_v[row_offset + it_col] + damping_factor*0.25*(m_v[r1 + it_col] + m_v[r2 + it_col] + m_v[r4 + it_col] + m_v[r3 + it_col] + m_f[row_offset + it_col]/divisor);
+      m_v_temp[row_offset + it_col] = (1.0 - damping_factor)*m_v[row_offset + it_col] + damping_factor*0.25*(m_v[r1 + it_col] + m_v[r2 + it_col] + m_v[r4 + it_col] + m_v[r3 + it_col] + m_f[row_offset + it_col]*h2);
+      residual += std::abs(m_v_temp[row_offset + it_col] - m_v[row_offset + it_col]);
+      std::cout << residual << ", " << m_v_temp[row_offset + it_col] << ", " << m_v[row_offset + it_col] << std::endl;
     }
  }
  delete[] m_v;
  m_v = m_v_temp;
+ return residual*h2;
 }
+
 double Grid:: calculate_L_inf_norm(double(*solution_function)(int, int, int))
 {
   double max = 0.0;
@@ -146,12 +154,13 @@ double Grid:: calculate_L_inf_norm(double(*solution_function)(int, int, int))
       temp = std::abs(temp = m_v[it_row * m_n + it_col] - solution_function(it_row, it_col, m_n));
       if(temp > max)
       {
-	max = temp;
+max = temp;
       }
     }
   }
   return max;
 }
+
 void Grid:: print_v(void)
 {
   std::cout << "v=" << std::endl;
@@ -180,4 +189,3 @@ void Grid:: print_f(void)
     std::cout << std::endl;
   }
 }
-

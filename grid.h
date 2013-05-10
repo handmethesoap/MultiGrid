@@ -44,7 +44,7 @@ public:
       set_boundary(boundary_function);
   }
   
-  Grid(int n, double(*boundary_function)(int, int, int), double(*v_initialiser_function)(int, int, int))
+  Grid(int n, double(*boundary_function)(int, int, int), double(*v_initialiser_function)(int, int, int, int), int k)
   {
       m_n = n;
       m_v = new double[n*n];
@@ -55,11 +55,10 @@ public:
 	m_f[i] = 0;
       }
       
-      set_initial(v_initialiser_function);
+      set_initial(v_initialiser_function, k);
       set_boundary(boundary_function);
   }
-  
-  Grid(int n, double(*boundary_function)(int, int, int), double(*v_initialiser_function)(int, int, int), double(*f_initialiser_function)(int, int, int))
+   Grid(int n, double(*boundary_function)(int, int, int), double(*v_initialiser_function)(int, int, int), double(*f_initialiser_function)(int, int, int))
   {
       m_n = n;
       m_v = new double[n*n];
@@ -69,6 +68,16 @@ public:
       set_boundary(boundary_function);
   }
   
+//   Grid(int n, double(*boundary_function)(int, int, int), double(*v_initialiser_function)(int, int, int), double(*f_initialiser_function)(int, int, int))
+//   {
+//       m_n = n;
+//       m_v = new double[n*n];
+//       m_f = new double[n*n];
+//       
+//       set_initial(v_initialiser_function, f_initialiser_function);
+//       set_boundary(boundary_function);
+//   }
+//   
   ~Grid(void)
   {
     delete[] m_v;
@@ -91,11 +100,11 @@ public:
   }
   
   void set_boundary(double(*boundary_function)(int, int, int));
-  void set_initial(double(*v_initialiser_function)(int, int, int));
+  void set_initial(double(*v_initialiser_function)(int, int, int, int), int k);
   void set_initial(double(*v_initialiser_function)(int, int, int), double(*f_initialiser_function)(int, int, int));
   void rb_gauss_seidel_relaxation(void);
-  void jacobi_relaxation(void);
-  void damped_jacobi_relaxation(int damping_factor);
+  double jacobi_relaxation(void);
+  double damped_jacobi_relaxation(double damping_factor);
   void full_weight_restriction(void);
   double calculate_L_inf_norm(double(*solution_function)(int, int, int));
   void print_v(void); // overload ostream operator instead
