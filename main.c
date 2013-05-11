@@ -37,9 +37,9 @@ int main(int argc, char* argv[])
     current_error = initial_error;
     iterations = 0;
     
-    while( (current_error*100 > initial_error) && (iterations < 8000) )
+    while( (current_error*100 > initial_error) )
     {
-      A.damped_jacobi_relaxation(2/3);
+      A.damped_jacobi_relaxation(0.5);
       current_error = A.calculate_L_inf_norm(v_initialiser_function_zero);
       ++iterations;
     }

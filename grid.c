@@ -135,7 +135,7 @@ double Grid:: damped_jacobi_relaxation(double damping_factor)
     {
       m_v_temp[row_offset + it_col] = (1.0 - damping_factor)*m_v[row_offset + it_col] + damping_factor*0.25*(m_v[r1 + it_col] + m_v[r2 + it_col] + m_v[r4 + it_col] + m_v[r3 + it_col] + m_f[row_offset + it_col]*h2);
       residual += std::abs(m_v_temp[row_offset + it_col] - m_v[row_offset + it_col]);
-      std::cout << residual << ", " << m_v_temp[row_offset + it_col] << ", " << m_v[row_offset + it_col] << std::endl;
+      //std::cout << residual << ", " << m_v_temp[row_offset + it_col] << ", " << m_v[row_offset + it_col] << std::endl;
     }
  }
  delete[] m_v;
