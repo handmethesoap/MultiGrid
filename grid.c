@@ -9,6 +9,11 @@ void Grid:: set_boundary(double(*boundary_function)(int, int, int))
     m_v[m_n*m_n - m_n + it] = boundary_function(m_n, it, m_n);
     m_v[it*m_n] = boundary_function(it, 0, m_n);
     m_v[it*m_n + m_n - 1] = boundary_function(it, m_n - 1, m_n);
+    
+    m_f[it] = boundary_function(0, it, m_n);
+    m_f[m_n*m_n - m_n + it] = boundary_function(m_n, it, m_n);
+    m_f[it*m_n] = boundary_function(it, 0, m_n);
+    m_f[it*m_n + m_n - 1] = boundary_function(it, m_n - 1, m_n);
   }
   
 }
@@ -190,8 +195,96 @@ void Grid:: print_f(void)
   }
 }
 
-Grid* Grid:: calculate_residual(void)
+void Grid:: print_r(void)
 {
-//   r = m_f - 
-//   Grid R = v  - 
+   std::cout << "r=" << std::endl;
+  
+  for( int i = 0; i < m_n; ++i)
+  {
+    for( int j = 0; j < m_n; ++j )
+    {
+      std::cout << m_r[i*m_n + j] << " ";
+    }
+    std::cout << std::endl;
+  }
 }
+
+void Grid:: calculate_residual(void)
+{
+  
+  int row_offset, r1, r2, r3, r4;
+  double h2 = 1.0/((m_n-1)*(m_n-1));
+  
+  //set error on boundary to zero
+  for( int it = 0; it < m_n; ++it)
+  {
+    m_r[it] = 0;
+    m_r[m_n*m_n - m_n + it] = 0;
+    m_r[it*m_n] = 0;
+    m_r[it*m_n + m_n - 1] = 0;
+  }
+  
+  for( int it_row = 1; it_row < ((m_n)-1); ++it_row )
+ {
+    row_offset = it_row * m_n;
+    r1 = row_offset - m_n;
+    r2 = row_offset + m_n;
+    r3 = row_offset - 1;
+    r4 = row_offset + 1;
+    for( int it_col = 1; it_col < ((m_n)-1); ++ it_col )
+    {
+      m_r[row_offset + it_col] = h2*(m_v[r1 + it_col] + m_v[r2 + it_col] + m_v[r4 + it_col] + m_v[r3 + it_col] - 4*m_v[row_offset + it_col]) + m_f[row_offset + it_col];
+    }
+ }
+
+}
+
+
+
+double* Grid:: fw_restrict(void)
+{
+  double *restricted_v = new double[((m_n+1)/2)*((m_n+1)/2)];
+  
+  //Set boundaries to zero
+  for( int it = 0; it < (m_n+1)/2; ++it)
+  {
+    restricted_v[it] = 0;
+    restricted_v[m_n*m_n - m_n + it] = 0;
+    restricted_v[it*m_n] = 0;
+    restricted_v[it*m_n + m_n - 1] = 0;
+  }
+  
+  for( int it_row = 1; it_row < ((m_n-1)/2); ++it_row )
+  {
+    std::cout << "row " << it_row << std::endl;
+    for( int it_col = 1; it_col < ((m_n-1)/2); ++ it_col )
+    {
+      
+      restricted_v[it_row*(m_n+1)/2 + it_col] = m_v[2*it_row * m_n + 2*it_col]; //h2*(m_v[] + m_v[] + m_v[] + m_v[] - 4*m_v[) + m_f[];
+      std::cout << "col " << it_col << std::endl;
+    }
+    
+  }
+std::cout << "hello" << std::endl;
+  return restricted_v;
+  
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

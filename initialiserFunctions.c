@@ -24,13 +24,13 @@ double f_initialiser_function_sin(int grid_point_row, int grid_point_column, int
 
 double v_initialiser_function_zero(int grid_point_row, int grid_point_column, int n)
 {
-  double grid_value = 0.0;
+  double grid_value = grid_point_column;
   return grid_value; 
 }
 
 double f_initialiser_function_zero(int grid_point_row, int grid_point_column, int n)
 {
-  double grid_value = 0.0;
+  double grid_value = grid_point_column;
   return grid_value; 
 }
 
