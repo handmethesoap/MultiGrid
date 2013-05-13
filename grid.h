@@ -10,6 +10,7 @@ private:
   
   double* m_v;
   double* m_f;
+  double* m_r;
   int m_n;
   
 public:
@@ -20,6 +21,7 @@ public:
       m_n = n;
       m_v = new double[n*n];
       m_f = new double[n*n];
+      m_r = new double[n*n];
       
       for( int i = 0; i < n*n; i ++)
       {
@@ -44,7 +46,7 @@ public:
       set_boundary(boundary_function);
   }
   
-  Grid(int n, double(*boundary_function)(int, int, int), double(*v_initialiser_function)(int, int, int, int), int k)
+  Grid(int n, double(*boundary_function)(int, int, int), double(*v_initialiser_function)(int, int, int))
   {
       m_n = n;
       m_v = new double[n*n];
@@ -55,7 +57,7 @@ public:
 	m_f[i] = 0;
       }
       
-      set_initial(v_initialiser_function, k);
+      set_initial(v_initialiser_function);
       set_boundary(boundary_function);
   }
    Grid(int n, double(*boundary_function)(int, int, int), double(*v_initialiser_function)(int, int, int), double(*f_initialiser_function)(int, int, int))
@@ -100,13 +102,14 @@ public:
   }
   
   void set_boundary(double(*boundary_function)(int, int, int));
-  void set_initial(double(*v_initialiser_function)(int, int, int, int), int k);
+  void set_initial(double(*v_initialiser_function)(int, int, int));
   void set_initial(double(*v_initialiser_function)(int, int, int), double(*f_initialiser_function)(int, int, int));
   void rb_gauss_seidel_relaxation(void);
   double jacobi_relaxation(void);
   double damped_jacobi_relaxation(double damping_factor);
   void full_weight_restriction(void);
   double calculate_L_inf_norm(double(*solution_function)(int, int, int));
+  Grid * calculate_residual(void);
   void print_v(void); // overload ostream operator instead
   void print_f(void);
   

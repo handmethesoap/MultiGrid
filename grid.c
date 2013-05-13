@@ -13,13 +13,13 @@ void Grid:: set_boundary(double(*boundary_function)(int, int, int))
   
 }
 
-void Grid:: set_initial(double(*v_initialiser_function)(int, int, int, int), int k)
+void Grid:: set_initial(double(*v_initialiser_function)(int, int, int))
 {
    for( int it_row = 0; it_row < (m_n); ++it_row )
    {
      for( int it_col = 0; it_col < (m_n); ++ it_col )
      {
-       m_v[it_row * m_n + it_col] = v_initialiser_function(it_row, it_col, m_n, k);
+       m_v[it_row * m_n + it_col] = v_initialiser_function(it_row, it_col, m_n);
      }
    }
 }
@@ -188,4 +188,10 @@ void Grid:: print_f(void)
     }
     std::cout << std::endl;
   }
+}
+
+Grid* Grid:: calculate_residual(void)
+{
+//   r = m_f - 
+//   Grid R = v  - 
 }
