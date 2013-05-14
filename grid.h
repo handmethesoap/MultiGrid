@@ -153,7 +153,15 @@ public:
     return m_n;
   }
   
-  
+  friend std::ostream& operator <<(std::ostream &out, Grid &outputGrid)
+  {
+    int n= outputGrid.m_n;
+    for(int i = 0; i < n*n; ++i)
+    {
+      out << i/(n-1) << " " <<  (i%(n-1)) << " " << outputGrid.m_v[i] << std::endl;
+    }
+    return out;
+  }
   
   void set_boundary(double(*boundary_function)(int, int, int));
   void set_initial(double(*v_initialiser_function)(int, int, int));
@@ -167,9 +175,12 @@ public:
   double* fw_restrict(void);
   double* bl_interpolate(void);
   void add_to_v( double * error_correction );
+  void set_f( double * new_f ); 
   
-  double calculate_L_inf_norm(double(*solution_function)(int, int, int));
+  
   void calculate_residual(void);
+  double calculate_L_inf_norm(double(*solution_function)(int, int, int));
+  double calculate_L2_norm( double * exact_solution );
   
   void print_v(void); // overload ostream operator instead
   void print_f(void);
@@ -178,4 +189,7 @@ public:
   
 };
   
+
+
+
 #endif

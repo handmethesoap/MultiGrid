@@ -159,7 +159,7 @@ double Grid:: calculate_L_inf_norm(double(*solution_function)(int, int, int))
       temp = std::abs(temp = m_v[it_row * m_n + it_col] - solution_function(it_row, it_col, m_n));
       if(temp > max)
       {
-max = temp;
+	max = temp;
       }
     }
   }
@@ -178,7 +178,7 @@ void Grid:: print_v(void)
     }
     std::cout << std::endl;
   }
-  std::cout << "end" << std::endl;
+  std::cout << std::endl;
 }
 
   
@@ -356,10 +356,34 @@ void Grid:: add_to_v( double * error_correction )
     {
       m_v[i*(m_n) + j] += error_correction[i*(m_n) + j];
     }
-    std::cout << std::endl;
   }
+  delete error_correction;
 }
 
+double Grid:: calculate_L2_norm( double * exact_solution )
+{
+  double L2 = 0.0;
+  
+  for( int i = 0; i < m_n; ++i)
+  {
+    for( int j = 0; j < m_n; ++j )
+    {
+      L2 += sqrt((m_v[i*(m_n) + j] - exact_solution[i*(m_n) + j])*(m_v[i*(m_n) + j] - exact_solution[i*(m_n) + j]));
+      std::cout <<  m_v[i*(m_n) + j] << "-" << exact_solution[i*(m_n) + j] << std::endl;
+    }
+
+  }
+  
+  delete[] exact_solution;
+  return L2;
+}
+  
+void Grid:: set_f( double * new_f )
+{
+  delete[] m_f;
+  
+  m_f = new_f;
+}
 
 
 
