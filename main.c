@@ -33,8 +33,10 @@ int main(int argc, char* argv[])
   
   for(int it = 1; it < l; ++it)
   {
-      Grids[it] = new Grid((1 << it) + 1);
+      Grids[it] = new Grid((1 << (l-it)) + 1);
+      
   }
+
   
   for(int vcycles = 0; vcycles < n; ++vcycles)
   {
@@ -67,7 +69,7 @@ int main(int argc, char* argv[])
   
   std::cout << L2_norm << std::endl;
   
-  Grids[0]->print_v();
+  //Grids[0]->print_v();
   
   for( int it = 0; it < l; ++it)
   {

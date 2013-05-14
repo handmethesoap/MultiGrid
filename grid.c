@@ -275,17 +275,7 @@ double* Grid:: bl_interpolate(void)
 {
   double* interpolated_v = new double[(m_n*2-1)*(m_n*2-1)];
 
-  //Set boundaries to zero
-  for( int it = 0; it < (m_n*2-1); ++it)
-  {
-    interpolated_v[it] = 0;
-    
-    interpolated_v[(m_n*2-1)*(m_n*2-1) - (m_n*2-1) + it] = 0;
-    
-    interpolated_v[it*(m_n*2-1)] = 0;
-    
-    interpolated_v[it*(m_n*2-1) + (m_n*2-1) - 1] = 0;
-  }
+
   
 //   //set all internal entries to zero temporarily
 //   for( int it_row = 1; it_row < (m_n*2-1) -1; ++it_row )
@@ -344,12 +334,26 @@ double* Grid:: bl_interpolate(void)
     }
     
   }
+  
+    //Set boundaries to zero
+  for( int it = 0; it < (m_n*2-1); ++it)
+  {
+    interpolated_v[it] = 0;
+    
+    interpolated_v[(m_n*2-1)*(m_n*2-1) - (m_n*2-1) + it] = 0;
+    
+    interpolated_v[it*(m_n*2-1)] = 0;
+    
+    interpolated_v[it*(m_n*2-1) + (m_n*2-1) - 1] = 0;
+  }
+ // std::cout<< "m_n1 " << m_n <<std::endl;
   return interpolated_v;
 }
 
 
 void Grid:: add_to_v( double * error_correction )
 {
+  //std::cout<< "m_n2 " << m_n <<std::endl << std::endl;
   for( int i = 0; i < m_n; ++i)
   {
     for( int j = 0; j < m_n; ++j )
