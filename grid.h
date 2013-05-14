@@ -71,66 +71,6 @@ public:
       m_r = r_initial;
       
   }
-  // Grid(int n, double(*v_initialiser_function)(int, int, int))
-  // {
-      // m_n = n;
-      // m_v = new double[n*n];
-      // m_f = new double[n*n];
-      // m_r = new double[n*n];
-      
-      // for( int i = 0; i < n*n; i ++)
-      // {
-	// m_v[i] = 0;
-	// m_f[i] = 0;
-	// m_r[i] = 0;
-      // }
-      
-      // set_initial(v_initialiser_function);
-  // }
-  
-  
-  // Grid(int n,  double(*v_initialiser_function)(int, int, int), double(*boundary_function)(int, int, int))
-  // {
-      // m_n = n;
-      // m_v = new double[n*n];
-      // m_f = new double[n*n];
-      // m_r = new double[n*n];
-      
-      // for( int i = 0; i < n*n; i ++)
-      // {
-	// m_f[i] = 0;
-	// m_r[i] = 0;
-      // }
-      
-      // set_initial(v_initialiser_function);
-      // set_boundary(boundary_function);
-  // }
-   // Grid(int n, double(*v_initialiser_function)(int, int, int), double(*boundary_function)(int, int, int),  double(*f_initialiser_function)(int, int, int))
-  // {
-      // m_n = n;
-      // m_v = new double[n*n];
-      // m_f = new double[n*n];
-      // m_r = new double[n*n];
-      
-      // for( int i = 0; i < n*n; i ++)
-      // {
-	// m_r[i] = 0;
-      // }
-      
-      // set_initial(v_initialiser_function, f_initialiser_function);
-      // set_boundary(boundary_function);
-  // }
-  
-//   Grid(int n, double(*boundary_function)(int, int, int), double(*v_initialiser_function)(int, int, int), double(*f_initialiser_function)(int, int, int))
-//   {
-//       m_n = n;
-//       m_v = new double[n*n];
-//       m_f = new double[n*n];
-//       
-//       set_initial(v_initialiser_function, f_initialiser_function);
-//       set_boundary(boundary_function);
-//   }
-//   
   ~Grid(void)
   {
     delete[] m_v;
@@ -155,11 +95,17 @@ public:
   
   friend std::ostream& operator <<(std::ostream &out, Grid &outputGrid)
   {
-    int n= outputGrid.m_n;
-    for(int i = 0; i < n*n; ++i)
+    double n = outputGrid.m_n;
+    
+    for( double i = 0.0; i < n; ++i)
     {
-      out << i/(n-1) << " " <<  (i%(n-1)) << " " << outputGrid.m_v[i] << std::endl;
+      for( double j = 0.0; j < n; ++j )
+      {
+	out << i/(n-1) << " " <<  j/(n-1) << " " << outputGrid.m_v[static_cast<int>(i*(n) + j)] << std::endl;
+      }
+      out << std::endl;
     }
+
     return out;
   }
   

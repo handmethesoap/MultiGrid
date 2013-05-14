@@ -274,7 +274,7 @@ double* Grid:: fw_restrict(void)
 double* Grid:: bl_interpolate(void)
 {
   double* interpolated_v = new double[(m_n*2-1)*(m_n*2-1)];
-  
+
   //Set boundaries to zero
   for( int it = 0; it < (m_n*2-1); ++it)
   {
@@ -287,14 +287,14 @@ double* Grid:: bl_interpolate(void)
     interpolated_v[it*(m_n*2-1) + (m_n*2-1) - 1] = 0;
   }
   
-  // set all internal entries to zero temporarily
-  for( int it_row = 1; it_row < (m_n*2-1) -1; ++it_row )
-  {
-    for(int it_col = 1; it_col < (m_n*2-1) -1; ++it_col )
-    {
-      interpolated_v[it_row*(m_n*2-1) + it_col] = 0;
-    }
-  }
+//   //set all internal entries to zero temporarily
+//   for( int it_row = 1; it_row < (m_n*2-1) -1; ++it_row )
+//   {
+//     for(int it_col = 1; it_col < (m_n*2-1) -1; ++it_col )
+//     {
+//       interpolated_v[it_row*(m_n*2-1) + it_col] = 0;
+//     }
+//   }
   
   //copy directly interior values of coarser grid to appropriate locations on finer grid
   for( int it_row = 1; it_row < m_n - 1; ++it_row )
@@ -369,7 +369,7 @@ double Grid:: calculate_L2_norm( double * exact_solution )
     for( int j = 0; j < m_n; ++j )
     {
       L2 += sqrt((m_v[i*(m_n) + j] - exact_solution[i*(m_n) + j])*(m_v[i*(m_n) + j] - exact_solution[i*(m_n) + j]));
-      std::cout <<  m_v[i*(m_n) + j] << "-" << exact_solution[i*(m_n) + j] << std::endl;
+      //std::cout <<  m_v[i*(m_n) + j] << "-" << exact_solution[i*(m_n) + j] << std::endl;
     }
 
   }

@@ -39,7 +39,7 @@ double* initialiser_function_zero(int n)
   
   for( int it = 0; it < n*n; ++it)
   {
-    init[it] = 0;
+    init[it] = 1;
   }
   
   return init;
