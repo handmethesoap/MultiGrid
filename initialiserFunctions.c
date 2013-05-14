@@ -3,39 +3,30 @@
 #include <iostream>
 const double pi = 3.14159265;
 
-double boundary_function_zero(int grid_point_row, int grid_point_column, int n)
+double* sin_boundary(int n)
 {
-  double grid_value = 0.0;
-  return grid_value;
+  double* init = new double[n*n];
+  
+  for( int it = 0; it < n; ++it)
+  {
+    init[it] = 0;
+    init[n*n - n + it] = sin(pi*it/(n-1))*sinh(pi);
+    init[it*n] = 0;
+    init[it*n + n - 1] = 0;
+  }
+  
+  return init;
 }
 
-double sin_boundary(int grid_point_row, int grid_point_column, int n)
+double* initialiser_function_zero(int n)
 {
-  double grid_value = sin(pi*grid_point_column/(n-1))*sinh(pi*grid_point_row/(n-1));
-  return grid_value;
+    double* init = new double[n*n];
+  
+  for( int it = 0; it < n*n; ++it)
+  {
+    init[it] = 0;
+  }
+  
+  return init;
 }
 
-double f_initialiser_function_sin(int grid_point_row, int grid_point_column, int n)
-{
-  double grid_value = sin(pi*grid_point_column/(n-1))*sin(pi*grid_point_row/(n-1));
-  return grid_value; 
-}
-
-
-double v_initialiser_function_zero(int grid_point_row, int grid_point_column, int n)
-{
-  double grid_value = grid_point_column;
-  return grid_value; 
-}
-
-double f_initialiser_function_zero(int grid_point_row, int grid_point_column, int n)
-{
-  double grid_value = grid_point_column;
-  return grid_value; 
-}
-
-double exact_solution( int grid_point_row, int grid_point_column, int n)
-{
-  double grid_value = sin(pi*grid_point_column/(n-1))*sin(pi*grid_point_row/(n-1))/(2*pi*pi);
-  return grid_value;
-}

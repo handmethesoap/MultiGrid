@@ -34,23 +34,6 @@ public:
 
   }
   
-  Grid(int n, double(*v_initialiser_function)(int, int, int))
-  {
-      m_n = n;
-      m_v = new double[n*n];
-      m_f = new double[n*n];
-      m_r = new double[n*n];
-      
-      for( int i = 0; i < n*n; i ++)
-      {
-	m_v[i] = 0;
-	m_f[i] = 0;
-	m_r[i] = 0;
-      }
-      
-      set_initial(v_initialiser_function);
-  }
-  
   Grid(int n, double *v_initial)
   {
       m_n = n;
@@ -65,38 +48,68 @@ public:
       }
   }
   
+  Grid(int n, double *v_initial, double *f_initial)
+  {
+      m_n = n;
+      m_v = v_initial;
+      m_f = f_initial;
+      m_r = new double[n*n];
+      
+      for( int i = 0; i < n*n; i ++)
+      {
+	m_r[i] = 0;
+      }
+  }
   
-  Grid(int n,  double(*v_initialiser_function)(int, int, int), double(*boundary_function)(int, int, int))
-  {
-      m_n = n;
-      m_v = new double[n*n];
-      m_f = new double[n*n];
-      m_r = new double[n*n];
+  // Grid(int n, double(*v_initialiser_function)(int, int, int))
+  // {
+      // m_n = n;
+      // m_v = new double[n*n];
+      // m_f = new double[n*n];
+      // m_r = new double[n*n];
       
-      for( int i = 0; i < n*n; i ++)
-      {
-	m_f[i] = 0;
-	m_r[i] = 0;
-      }
+      // for( int i = 0; i < n*n; i ++)
+      // {
+	// m_v[i] = 0;
+	// m_f[i] = 0;
+	// m_r[i] = 0;
+      // }
       
-      set_initial(v_initialiser_function);
-      set_boundary(boundary_function);
-  }
-   Grid(int n, double(*v_initialiser_function)(int, int, int), double(*boundary_function)(int, int, int),  double(*f_initialiser_function)(int, int, int))
-  {
-      m_n = n;
-      m_v = new double[n*n];
-      m_f = new double[n*n];
-      m_r = new double[n*n];
+      // set_initial(v_initialiser_function);
+  // }
+  
+  
+  // Grid(int n,  double(*v_initialiser_function)(int, int, int), double(*boundary_function)(int, int, int))
+  // {
+      // m_n = n;
+      // m_v = new double[n*n];
+      // m_f = new double[n*n];
+      // m_r = new double[n*n];
       
-      for( int i = 0; i < n*n; i ++)
-      {
-	m_r[i] = 0;
-      }
+      // for( int i = 0; i < n*n; i ++)
+      // {
+	// m_f[i] = 0;
+	// m_r[i] = 0;
+      // }
       
-      set_initial(v_initialiser_function, f_initialiser_function);
-      set_boundary(boundary_function);
-  }
+      // set_initial(v_initialiser_function);
+      // set_boundary(boundary_function);
+  // }
+   // Grid(int n, double(*v_initialiser_function)(int, int, int), double(*boundary_function)(int, int, int),  double(*f_initialiser_function)(int, int, int))
+  // {
+      // m_n = n;
+      // m_v = new double[n*n];
+      // m_f = new double[n*n];
+      // m_r = new double[n*n];
+      
+      // for( int i = 0; i < n*n; i ++)
+      // {
+	// m_r[i] = 0;
+      // }
+      
+      // set_initial(v_initialiser_function, f_initialiser_function);
+      // set_boundary(boundary_function);
+  // }
   
 //   Grid(int n, double(*boundary_function)(int, int, int), double(*v_initialiser_function)(int, int, int), double(*f_initialiser_function)(int, int, int))
 //   {

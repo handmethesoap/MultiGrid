@@ -174,10 +174,11 @@ void Grid:: print_v(void)
   {
     for( int j = 0; j < m_n; ++j )
     {
-      std::cout << m_v[i*m_n + j] << " ";
+      std::cout << m_v[i*(m_n - 1) + j] << " ";
     }
     std::cout << std::endl;
   }
+  std::cout << "end" << std::endl;
 }
 
   
@@ -189,7 +190,7 @@ void Grid:: print_f(void)
   {
     for( int j = 0; j < m_n; ++j )
     {
-      std::cout << m_f[i*m_n + j] << " ";
+      std::cout << m_f[i*(m_n - 1) + j] << " ";
     }
     std::cout << std::endl;
   }
@@ -203,7 +204,7 @@ void Grid:: print_r(void)
   {
     for( int j = 0; j < m_n; ++j )
     {
-      std::cout << m_r[i*m_n + j] << " ";
+      std::cout << m_r[i*(m_n - 1) + j] << " ";
     }
     std::cout << std::endl;
   }
@@ -260,7 +261,7 @@ double* Grid:: fw_restrict(void)
     for( int it_col = 1; it_col < ((m_n-1)/2); ++ it_col )
     {
       
-      restricted_v[it_row*(m_n+1)/2 + it_col] = m_v[2*it_row * m_n + 2*it_col]; //h2*(m_v[] + m_v[] + m_v[] + m_v[] - 4*m_v[) + m_f[];
+      restricted_v[it_row*(m_n+1)/2 + 2*it_col] = m_v[2*it_row * m_n + 2*it_col]; //h2*(m_v[] + m_v[] + m_v[] + m_v[] - 4*m_v[) + m_f[];
       std::cout << "col " << it_col << std::endl;
     }
     
