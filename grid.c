@@ -262,7 +262,7 @@ double* Grid:: fw_restrict(void)
     {
       
       restricted_v[it_row*(m_n+1)/2 + it_col] = 0.0625*( m_r[(2*it_row -1) * m_n + (2*it_col - 1)] + m_r[(2*it_row -1) * m_n + (2*it_col + 1)] + m_r[(2*it_row + 1) * m_n + (2*it_col - 1)] + m_r[(2*it_row + 1) * m_n + (2*it_col + 1)] + 2*( m_r[(2*it_row + 1) * m_n + (2*it_col)] + m_r[(2*it_row - 1) * m_n + (2*it_col)] + m_r[(2*it_row) * m_n + (2*it_col - 1)] + m_r[(2*it_row) * m_n + (2*it_col + 1)]) + 4*m_r[(2*it_row) * m_n + (2*it_col)]);
-      //std::cout << "test " << it_row*(m_n+1)/2 + it_col<< std::endl;
+
     }
     
   }
@@ -273,18 +273,7 @@ double* Grid:: fw_restrict(void)
 
 double* Grid:: bl_interpolate(void)
 {
-  double* interpolated_v = new double[(m_n*2-1)*(m_n*2-1)];
-
-
-  
-//   //set all internal entries to zero temporarily
-//   for( int it_row = 1; it_row < (m_n*2-1) -1; ++it_row )
-//   {
-//     for(int it_col = 1; it_col < (m_n*2-1) -1; ++it_col )
-//     {
-//       interpolated_v[it_row*(m_n*2-1) + it_col] = 0;
-//     }
-//   }
+  double* interpolated_v = new double[(m_n*2-1)*(m_n*2-1)]();
   
   //copy directly interior values of coarser grid to appropriate locations on finer grid
   for( int it_row = 1; it_row < m_n - 1; ++it_row )
@@ -346,14 +335,13 @@ double* Grid:: bl_interpolate(void)
     
     interpolated_v[it*(m_n*2-1) + (m_n*2-1) - 1] = 0;
   }
- // std::cout<< "m_n1 " << m_n <<std::endl;
+
   return interpolated_v;
 }
 
 
 void Grid:: add_to_v( double * error_correction )
 {
-  //std::cout<< "m_n2 " << m_n <<std::endl << std::endl;
   for( int i = 0; i < m_n; ++i)
   {
     for( int j = 0; j < m_n; ++j )
@@ -361,19 +349,20 @@ void Grid:: add_to_v( double * error_correction )
       m_v[i*(m_n) + j] += error_correction[i*(m_n) + j];
     }
   }
-  delete error_correction;
+  delete[] error_correction;
 }
 
 double Grid:: calculate_L2_norm( double * exact_solution )
 {
   double L2 = 0.0;
+  double temp1 = 0;
   
   for( int i = 0; i < m_n; ++i)
   {
     for( int j = 0; j < m_n; ++j )
     {
-      L2 += sqrt((m_v[i*(m_n) + j] - exact_solution[i*(m_n) + j])*(m_v[i*(m_n) + j] - exact_solution[i*(m_n) + j]));
-      //std::cout <<  m_v[i*(m_n) + j] << "-" << exact_solution[i*(m_n) + j] << std::endl;
+      temp1 = (m_v[i*(m_n) + j] - exact_solution[i*(m_n) + j]);
+      L2 += sqrt((temp1)*(temp1));
     }
 
   }
@@ -389,7 +378,21 @@ void Grid:: set_f( double * new_f )
   m_f = new_f;
 }
 
+std::ostream& operator<< (std::ostream &out, Grid &outputGrid)
+{
+  double n = outputGrid.m_n;
+  
+  for( double i = 0.0; i < n; ++i)
+  {
+    for( double j = 0.0; j < n; ++j )
+    {
+      out << i/(n-1) << " " <<  j/(n-1) << " " << outputGrid.m_v[static_cast<int>(i*(n) + j)] << std::endl;
+    }
+    out << std::endl;
+  }
 
+  return out;
+}
 
 
 

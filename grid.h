@@ -21,9 +21,9 @@ public:
   Grid(int n)
   {
       m_n = n;
-      m_v = new double[n*n];
-      m_f = new double[n*n];
-      m_r = new double[n*n];
+      m_v = new double[n*n]();
+      m_f = new double[n*n]();
+      m_r = new double[n*n]();
       
       for( int i = 0; i < n*n; ++i)
       {
@@ -38,8 +38,8 @@ public:
   {
       m_n = n;
       m_v = v_initial;
-      m_f = new double[n*n];
-      m_r = new double[n*n];
+      m_f = new double[n*n]();
+      m_r = new double[n*n]();
       
       for( int i = 0; i < n*n; ++i)
       {
@@ -54,7 +54,7 @@ public:
       m_n = n;
       m_v = v_initial;
       m_f = f_initial;
-      m_r = new double[n*n];
+      m_r = new double[n*n]();
       
       for( int i = 0; i < n*n; ++i)
       {
@@ -71,6 +71,7 @@ public:
       m_r = r_initial;
       
   }
+  
   ~Grid(void)
   {
     delete[] m_v;
@@ -93,21 +94,7 @@ public:
     return m_n;
   }
   
-  friend std::ostream& operator <<(std::ostream &out, Grid &outputGrid)
-  {
-    double n = outputGrid.m_n;
-    
-    for( double i = 0.0; i < n; ++i)
-    {
-      for( double j = 0.0; j < n; ++j )
-      {
-	out << i/(n-1) << " " <<  j/(n-1) << " " << outputGrid.m_v[static_cast<int>(i*(n) + j)] << std::endl;
-      }
-      out << std::endl;
-    }
-
-    return out;
-  }
+  friend std::ostream& operator<< (std::ostream &out, Grid &outputGrid);
   
   void set_boundary(double(*boundary_function)(int, int, int));
   void set_initial(double(*v_initialiser_function)(int, int, int));
@@ -128,13 +115,14 @@ public:
   double calculate_L_inf_norm(double(*solution_function)(int, int, int));
   double calculate_L2_norm( double * exact_solution );
   
-  void print_v(void); // overload ostream operator instead
+  void print_v(void); 
   void print_f(void);
   void print_r(void);
   
   
 };
   
+
 
 
 
