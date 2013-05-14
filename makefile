@@ -1,5 +1,5 @@
 CC = g++
-CFLAGS = -ansi -Wall -pedantic -O3 $(INCLUDES)
+CFLAGS = -O3 -Wall -Wshadow -ansi -pedantic $(INCLUDES)
 LIBS = 
 INCLUDES =
 TARGET = mgsolve

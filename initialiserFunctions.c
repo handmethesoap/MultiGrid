@@ -5,7 +5,7 @@ const double pi = 3.14159265;
 
 double* sin_boundary(int n)
 {
-  double* init = new double[n*n];
+  double* init = new double[n*n]();
   
   for( int it = 0; it < n; ++it)
   {
@@ -20,7 +20,7 @@ double* sin_boundary(int n)
 
 double* initialiser_function_zero(int n)
 {
-    double* init = new double[n*n];
+    double* init = new double[n*n]();
   
   for( int it = 0; it < n*n; ++it)
   {
@@ -30,3 +30,14 @@ double* initialiser_function_zero(int n)
   return init;
 }
 
+double* numbered_initialiser(int n)
+{
+    double* init = new double[n*n]();
+  
+  for( int it = 0; it < n*n; ++it)
+  {
+    init[it] = it;
+  }
+  
+  return init;
+}

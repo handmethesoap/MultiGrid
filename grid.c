@@ -174,7 +174,7 @@ void Grid:: print_v(void)
   {
     for( int j = 0; j < m_n; ++j )
     {
-      std::cout << m_v[i*(m_n - 1) + j] << " ";
+      std::cout << m_v[i*(m_n) + j] << " ";
     }
     std::cout << std::endl;
   }
@@ -190,7 +190,7 @@ void Grid:: print_f(void)
   {
     for( int j = 0; j < m_n; ++j )
     {
-      std::cout << m_f[i*(m_n - 1) + j] << " ";
+      std::cout << m_f[i*(m_n) + j] << " ";
     }
     std::cout << std::endl;
   }
@@ -204,7 +204,7 @@ void Grid:: print_r(void)
   {
     for( int j = 0; j < m_n; ++j )
     {
-      std::cout << m_r[i*(m_n - 1) + j] << " ";
+      std::cout << m_r[i*(m_n) + j] << " ";
     }
     std::cout << std::endl;
   }
@@ -250,31 +250,115 @@ double* Grid:: fw_restrict(void)
   for( int it = 0; it < (m_n+1)/2; ++it)
   {
     restricted_v[it] = 0;
-    restricted_v[m_n*m_n - m_n + it] = 0;
-    restricted_v[it*m_n] = 0;
-    restricted_v[it*m_n + m_n - 1] = 0;
+    restricted_v[((m_n+1)/2)*((m_n+1)/2) - ((m_n+1)/2) + it] = 0;
+    restricted_v[it*((m_n+1)/2)] = 0;
+    restricted_v[it*((m_n+1)/2) + ((m_n+1)/2) - 1] = 0;
   }
   
   for( int it_row = 1; it_row < ((m_n-1)/2); ++it_row )
   {
-    std::cout << "row " << it_row << std::endl;
+    
     for( int it_col = 1; it_col < ((m_n-1)/2); ++ it_col )
     {
       
-      restricted_v[it_row*(m_n+1)/2 + 2*it_col] = m_v[2*it_row * m_n + 2*it_col]; //h2*(m_v[] + m_v[] + m_v[] + m_v[] - 4*m_v[) + m_f[];
-      std::cout << "col " << it_col << std::endl;
+      restricted_v[it_row*(m_n+1)/2 + it_col] = 0.0625*( m_r[(2*it_row -1) * m_n + (2*it_col - 1)] + m_r[(2*it_row -1) * m_n + (2*it_col + 1)] + m_r[(2*it_row + 1) * m_n + (2*it_col - 1)] + m_r[(2*it_row + 1) * m_n + (2*it_col + 1)] + 2*( m_r[(2*it_row + 1) * m_n + (2*it_col)] + m_r[(2*it_row - 1) * m_n + (2*it_col)] + m_r[(2*it_row) * m_n + (2*it_col - 1)] + m_r[(2*it_row) * m_n + (2*it_col + 1)]) + 4*m_r[(2*it_row) * m_n + (2*it_col)]);
+      //std::cout << "test " << it_row*(m_n+1)/2 + it_col<< std::endl;
     }
     
   }
-std::cout << "hello" << std::endl;
+  
   return restricted_v;
   
 }
 
+double* Grid:: bl_interpolate(void)
+{
+  double* interpolated_v = new double[(m_n*2-1)*(m_n*2-1)];
+  
+  //Set boundaries to zero
+  for( int it = 0; it < (m_n*2-1); ++it)
+  {
+    interpolated_v[it] = 0;
+    
+    interpolated_v[(m_n*2-1)*(m_n*2-1) - (m_n*2-1) + it] = 0;
+    
+    interpolated_v[it*(m_n*2-1)] = 0;
+    
+    interpolated_v[it*(m_n*2-1) + (m_n*2-1) - 1] = 0;
+  }
+  
+  // set all internal entries to zero temporarily
+  for( int it_row = 1; it_row < (m_n*2-1) -1; ++it_row )
+  {
+    for(int it_col = 1; it_col < (m_n*2-1) -1; ++it_col )
+    {
+      interpolated_v[it_row*(m_n*2-1) + it_col] = 0;
+    }
+  }
+  
+  //copy directly interior values of coarser grid to appropriate locations on finer grid
+  for( int it_row = 1; it_row < m_n - 1; ++it_row )
+  {
+    
+    for( int it_col = 1; it_col < m_n - 1; ++ it_col )
+    {
+      
+      interpolated_v[(2*it_row) * (m_n*2-1) + (2*it_col)] = m_v[it_row*m_n + it_col];
+    }
+    
+  }
+  
+  //interpolate points with only diagonal connections
+  for( int it_row = 1; it_row < (m_n*2-1); it_row += 2 )
+  {
+    
+    for( int it_col = 1; it_col < (m_n*2-1) ; it_col += 2 )
+    {
+      
+      interpolated_v[(it_row) * (m_n*2-1) + (it_col)] = 0.25*(interpolated_v[(it_row -1) * (m_n*2-1) + (it_col - 1)] + interpolated_v[(it_row -1) * (m_n*2-1) + (it_col + 1)] + interpolated_v[(it_row + 1) * (m_n*2-1) + (it_col - 1)] + interpolated_v[(it_row +1) * (m_n*2-1) + (it_col + 1)]);
+    }
+    
+  }
+  //interpolate points with values above and below
+  for( int it_row = 1; it_row < (m_n*2-1); it_row += 2 )
+  {
+    
+    for( int it_col = 2; it_col < (m_n*2-1) ; it_col += 2 )
+    {
+      
+      interpolated_v[(it_row) * (m_n*2-1) + (it_col)] = 0.5*(interpolated_v[(it_row + 1) * (m_n*2-1) + (it_col)] + interpolated_v[(it_row - 1) * (m_n*2-1) + (it_col)]);
+      
+    }
+    
+  }
+  
+  //interpolate points with values left and right
+  for( int it_row = 2; it_row < (m_n*2-1); it_row += 2 )
+  {
+    
+    for( int it_col = 1; it_col < (m_n*2-1) ; it_col += 2 )
+    {
+      
+      interpolated_v[(it_row) * (m_n*2-1) + (it_col)] = 0.5*(interpolated_v[(it_row) * (m_n*2-1) + (it_col + 1)] + interpolated_v[(it_row) * (m_n*2-1) + (it_col - 1)]);
+      
+    }
+    
+  }
+  return interpolated_v;
+}
 
 
-
-
+void Grid:: add_to_v( double * error_correction )
+{
+  for( int i = 0; i < m_n; ++i)
+  {
+    for( int j = 0; j < m_n; ++j )
+    {
+      m_v[i*(m_n) + j] += error_correction[i*(m_n) + j];
+    }
+    std::cout << std::endl;
+  }
+}
 
 
 

@@ -25,7 +25,7 @@ public:
       m_f = new double[n*n];
       m_r = new double[n*n];
       
-      for( int i = 0; i < n*n; i ++)
+      for( int i = 0; i < n*n; ++i)
       {
 	m_v[i] = 0;
 	m_f[i] = 0;
@@ -41,7 +41,7 @@ public:
       m_f = new double[n*n];
       m_r = new double[n*n];
       
-      for( int i = 0; i < n*n; i ++)
+      for( int i = 0; i < n*n; ++i)
       {
 	m_f[i] = 0;
 	m_r[i] = 0;
@@ -50,17 +50,27 @@ public:
   
   Grid(int n, double *v_initial, double *f_initial)
   {
+
       m_n = n;
       m_v = v_initial;
       m_f = f_initial;
       m_r = new double[n*n];
       
-      for( int i = 0; i < n*n; i ++)
+      for( int i = 0; i < n*n; ++i)
       {
 	m_r[i] = 0;
       }
   }
   
+  Grid(int n, double *v_initial, double *f_initial, double *r_initial)
+  {
+
+      m_n = n;
+      m_v = v_initial;
+      m_f = f_initial;
+      m_r = r_initial;
+      
+  }
   // Grid(int n, double(*v_initialiser_function)(int, int, int))
   // {
       // m_n = n;
@@ -155,6 +165,8 @@ public:
   
   //Grid* full_weight_restriction(void);
   double* fw_restrict(void);
+  double* bl_interpolate(void);
+  void add_to_v( double * error_correction );
   
   double calculate_L_inf_norm(double(*solution_function)(int, int, int));
   void calculate_residual(void);
