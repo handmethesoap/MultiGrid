@@ -3,6 +3,7 @@
 
 #include <iostream>
 
+
 class Grid
 {
   
@@ -96,7 +97,7 @@ public:
   
   friend std::ostream& operator<< (std::ostream &out, Grid &outputGrid);
   
-  void rb_gauss_seidel_relaxation(void);
+  double rb_gauss_seidel_relaxation(void);
   double jacobi_relaxation(void);
   double damped_jacobi_relaxation(double damping_factor);
   
@@ -108,6 +109,7 @@ public:
   void calculate_residual(void);
   double calculate_L_inf_norm(double(*solution_function)(int, int, int));
   double calculate_L2_norm( double * exact_solution );
+  double calculate_L2_norm( void );
   
   void print_v(void); 
   void print_f(void);

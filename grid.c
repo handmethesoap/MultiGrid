@@ -1,11 +1,13 @@
 #include "grid.h"
 #include <cmath>
 
-void Grid:: rb_gauss_seidel_relaxation(void)
+double Grid:: rb_gauss_seidel_relaxation(void)
 {
   int start;
   int r1, r2, r3, r4, r5;
   int h2 = 1.0/(m_n-1)*(m_n-1);
+  double previous_value;
+  double residual = 0.0;
   
   //calculate new values for even interior grid points
   for( int it1 = 1; it1 < ((m_n)-1); ++it1 )
@@ -20,7 +22,9 @@ void Grid:: rb_gauss_seidel_relaxation(void)
     
     for( int it = start; it < ((m_n)-1); it += 2 )
     {
+      previous_value = m_v[ r1 + it];
       m_v[ r1 + it] = 0.25*(m_v[ r2 + it ] + m_v[ r3 + it ] + m_v[ r4 + it] + m_v[ r5 + it] + m_f[r1 + it]*h2);
+      residual += std::abs(m_v[ r1 + it] - previous_value);
     }
   }
    //calculate new values for odd interior grid points
@@ -36,9 +40,12 @@ void Grid:: rb_gauss_seidel_relaxation(void)
     
     for( int it = start; it < ((m_n)-1); it += 2 )
     {
+      previous_value = m_v[ r1 + it];
       m_v[ r1 + it] = 0.25*(m_v[ r2 + it ] + m_v[ r3 + it ] + m_v[ r4 + it] + m_v[ r5 + it] + m_f[r1 + it]*h2);
+      residual += std::abs(m_v[ r1 + it] - previous_value);
     }
   }
+  return residual*h2;
   
 }
 
@@ -359,9 +366,27 @@ double Grid:: calculate_L2_norm( double * exact_solution )
   }
   
   delete[] exact_solution;
-  return L2;
+  return L2/(m_n*m_n);
 }
+
+double Grid:: calculate_L2_norm( void )
+{
+  double L2 = 0.0;
+  double temp1 = 0;
   
+  for( int i = 0; i < m_n; ++i)
+  {
+    for( int j = 0; j < m_n; ++j )
+    {
+      temp1 = m_r[i*(m_n) + j];
+      L2 += sqrt((temp1)*(temp1));
+    }
+
+  }
+
+  return L2/(m_n*m_n);
+}
+
 void Grid:: set_f( double * new_f )
 {
   delete[] m_f;
