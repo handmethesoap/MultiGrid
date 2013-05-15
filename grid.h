@@ -96,20 +96,14 @@ public:
   
   friend std::ostream& operator<< (std::ostream &out, Grid &outputGrid);
   
-  void set_boundary(double(*boundary_function)(int, int, int));
-  void set_initial(double(*v_initialiser_function)(int, int, int));
-  void set_initial(double(*v_initialiser_function)(int, int, int), double(*f_initialiser_function)(int, int, int));
-  
   void rb_gauss_seidel_relaxation(void);
   double jacobi_relaxation(void);
   double damped_jacobi_relaxation(double damping_factor);
   
-  //Grid* full_weight_restriction(void);
   double* fw_restrict(void);
   double* bl_interpolate(void);
   void add_to_v( double * error_correction );
   void set_f( double * new_f ); 
-  
   
   void calculate_residual(void);
   double calculate_L_inf_norm(double(*solution_function)(int, int, int));
