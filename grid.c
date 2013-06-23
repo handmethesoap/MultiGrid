@@ -5,7 +5,7 @@ double Grid:: rb_gauss_seidel_relaxation(void)
 {
   int start;
   int r1, r2, r3, r4, r5;
-  int h2 = 1.0/(m_n-1)*(m_n-1);
+  double h2 = 1.0/((m_n-1)*(m_n-1));
   double previous_value;
   double residual = 0.0;
   
@@ -188,15 +188,15 @@ void Grid:: calculate_residual(void)
 {
   
   int row_offset, r1, r2, r3, r4;
-  double h2 = 1.0/((m_n-1)*(m_n-1));
+  double h1 = ((m_n-1.0)*(m_n-1.0));
   
   //set error on boundary to zero
   for( int it = 0; it < m_n; ++it)
   {
-    m_r[it] = 0;
-    m_r[m_n*m_n - m_n + it] = 0;
-    m_r[it*m_n] = 0;
-    m_r[it*m_n + m_n - 1] = 0;
+    m_r[it] = 0.0;
+    m_r[m_n*m_n - m_n + it] = 0.0;
+    m_r[it*m_n] = 0.0;
+    m_r[it*m_n + m_n - 1] = 0.0;
   }
   
   //calculate residual for interior points
@@ -209,10 +209,11 @@ void Grid:: calculate_residual(void)
     r4 = row_offset + 1;
     for( int it_col = 1; it_col < ((m_n)-1); ++ it_col )
     {
-      m_r[row_offset + it_col] = h2*(m_v[r1 + it_col] + m_v[r2 + it_col] + m_v[r4 + it_col] + m_v[r3 + it_col] - 4*m_v[row_offset + it_col]) + m_f[row_offset + it_col];
+      m_r[row_offset + it_col] = h1*(m_v[r1 + it_col] + m_v[r2 + it_col] + m_v[r4 + it_col] + m_v[r3 + it_col] - 4.0*m_v[row_offset + it_col]) + m_f[row_offset + it_col];
     }
  }
-
+ 
+ 
 }
 
 
@@ -225,10 +226,10 @@ double* Grid:: fw_restrict(void)
   //Set boundaries to zero
   for( int it = 0; it < (m_n+1)/2; ++it)
   {
-    restricted_v[it] = 0;
-    restricted_v[((m_n+1)/2)*((m_n+1)/2) - ((m_n+1)/2) + it] = 0;
-    restricted_v[it*((m_n+1)/2)] = 0;
-    restricted_v[it*((m_n+1)/2) + ((m_n+1)/2) - 1] = 0;
+    restricted_v[it] = 0.0;
+    restricted_v[((m_n+1)/2)*((m_n+1)/2) - ((m_n+1)/2) + it] = 0.0;
+    restricted_v[it*((m_n+1)/2)] = 0.0;
+    restricted_v[it*((m_n+1)/2) + ((m_n+1)/2) - 1] = 0.0;
   }
   
   //caluclate restricted values for interior points
@@ -248,12 +249,11 @@ double* Grid:: fw_restrict(void)
     for( int it_col = 1; it_col < ((m_n-1)/2); ++ it_col )
     {
       
-      restricted_v[row_offset + it_col] = 0.0625*( m_r[r1 + 2*it_col] + m_r[r2 + 2*it_col] + m_r[r3 + (2*it_col - 1)] + m_r[r4 + 2*it_col] + 2*( m_r[r5 + 2*it_col] + m_r[r6 + 2*it_col] + m_r[r7 + 2*it_col] + m_r[r8 + 2*it_col]) + 4*m_r[r9 + 2*it_col]);
+      restricted_v[row_offset + it_col] = 0.0625*( m_r[r1 + 2*it_col] + m_r[r2 + 2*it_col] + m_r[r3 + (2*it_col - 1)] + m_r[r4 + 2*it_col] + 2.0*( m_r[r5 + 2*it_col] + m_r[r6 + 2*it_col] + m_r[r7 + 2*it_col] + m_r[r8 + 2*it_col]) + 4.0*m_r[r9 + 2*it_col]);
 
     }
     
   }
-  
   return restricted_v;
   
 }
@@ -325,13 +325,13 @@ double* Grid:: bl_interpolate(void)
   for( int it = 0; it < (m_n*2-1); ++it)
   {
     row_offset = (m_n*2-1);
-    interpolated_v[it] = 0;
+    interpolated_v[it] = 0.0;
     
-    interpolated_v[row_offset*row_offset - row_offset + it] = 0;
+    interpolated_v[row_offset*row_offset - row_offset + it] = 0.0;
     
-    interpolated_v[it*row_offset] = 0;
+    interpolated_v[it*row_offset] = 0.0;
     
-    interpolated_v[it*row_offset + row_offset - 1] = 0;
+    interpolated_v[it*row_offset + row_offset - 1] = 0.0;
   }
 
   return interpolated_v;

@@ -32,7 +32,7 @@ int main(int argc, char* argv[])
   std::cout << "h = 1/" << (1 << l) << std::endl;
   
   //Print computed solution to file and exact solution to file for comparison
-  multigridProblem.print_solution();
+  multigridProblem.print_solution(0);
   multigridProblem.print_exact_solution( sin_fxn((1 << l) + 1));
   
   //Print discretisation error to screen
